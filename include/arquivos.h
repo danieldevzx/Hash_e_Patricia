@@ -8,6 +8,6 @@ typedef struct {
 } Arquivo;
 
 int abreArquivo(char *nome, Arquivo *arquivo);
-int
+int fechaArquivo(char *nome, Arquivo *arquivo);
 
 #endif
