@@ -12,31 +12,36 @@
 #ifndef PATRICIA_TAD_H_INCLUDED
 #define PATRICIA_TAD_H_INCLUDED
 
-typedef struct
-{
-    int qtde;
-    int idDoc;
-} tIndex;
+typedef int typeIndex;
+typedef int typeBit;
+typedef enum{
+    Inside, Outside
+} typeOfNode;
 
 typedef struct tNode *pNode;
+typedef struct tNode{
+    typeOfNode type;
+    union {
+        struct 
+        {
+            typeIndex index;
+            pNode lef, rig;
+        }insideNode;
+        char *key;
+    }Node;
+}tNode;
 
-typedef struct
-{
-    char chave;
-    int EndOfWord;
-    int length;
-    pNode pLeft, pRight; /* Esquerda palvra de mesmo tamanho <-> Direita tamanho maior */
-    tIndex *indexes;
-} tNode;
+void fPrintKey(char *key);
+void fConvertToBin(char *key, char *bin, int size);
+typeBit fGetNBit(typeIndex index, char *key);
+int IsOutside(pNode node);
+pNode fGenOutsideNode(char *key);
+pNode fGenInsideNode(int nodeIndex, pNode *lef, pNode *rig);
+pNode fInsertIn(char *key, pNode *node, int index);
+pNode fInsertWord(char *key, pNode *node);
+void fSearch(char *key, pNode node);
 
-typedef struct
-{
-    tNode *initialLetters;
-} tRoot;
 
-void fInsertWords(tRoot *root, char key[], int length);
 
-void fSearch(tRoot *root, char key[]);
 
-void IndexSorter(tIndex *indexes);
 #endif
