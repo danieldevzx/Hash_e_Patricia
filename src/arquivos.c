@@ -133,7 +133,7 @@ Node *fListaDePalavras(char **vetorDeArquivos, int qtd) {
             printf("Erro ao abrir o arquivo %s\n", vetorDeArquivos[i]);
             continue;
         }
-        if (!fProcessSecondLine(arquivo.arquivo, &list)) {
+        if (!fAdicionaIgredientes(arquivo.arquivo, &list)) {
             printf("Erro ao processar o arquivo %s\n", vetorDeArquivos[i]);
         }
         fFechaArquivo(&arquivo);

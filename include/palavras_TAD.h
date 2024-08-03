@@ -8,8 +8,6 @@
 #ifndef PALAVRAS_TAD_H
 #define PALAVRAS_TAD_H
 
-<<<<<<< HEAD
-=======
 #include <stdio.h>
 
 typedef struct{
@@ -20,7 +18,6 @@ typedef struct{
     char *name;
     tID vetor[];
 } tPalavra;
->>>>>>> master
 
 void fSalvaPalavra(tPalavra *nome, tID *valor);
 #endif

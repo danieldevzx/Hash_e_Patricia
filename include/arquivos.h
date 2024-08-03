@@ -21,11 +21,10 @@ typedef struct {
     FILE *arquivo;
 } tArquivo;
 
-<<<<<<< HEAD
-int abreArquivo(char *nome, Arquivo *arquivo);
-int fechaArquivo(char *nome, Arquivo *arquivo);
 
-=======
+int abreArquivo(char *nome, tArquivo *arquivo);
+int fechaArquivo(char *nome, tArquivo *arquivo);
+
 // Abre um arquivo e retorna 1 se a abertura foi bem-sucedida, e 0 caso contrário.
 int fAbreArquivo(char *nome, tArquivo *arquivo);
 
@@ -44,5 +43,4 @@ char **fCaminhoArquivos(char **arquivos, int qtd);
 //Função que cria uma lista para as palavras 
 Node *fListaDePalavras(char **vetorDeArquivos, int qtd);
 
->>>>>>> master
 #endif
