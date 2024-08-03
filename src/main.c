@@ -13,6 +13,7 @@ int main(){
     //char wordC[] = "Banana";
 
     fInsertWords(&root, wordA, strlen(wordA));
+    //main
 
     return 0;
 }
