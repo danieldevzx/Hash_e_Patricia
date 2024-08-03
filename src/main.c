@@ -1,12 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+<<<<<<< HEAD
+=======
+
+
+#include "patricia_TAD.c"
+>>>>>>> cb38f5dd3f46045b4e92db261c1ca7342528474e
 #include <unistd.h>
 #include "../include/patricia_TAD.h"
 
 
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
+<<<<<<< HEAD
+=======
+
+>>>>>>> cb38f5dd3f46045b4e92db261c1ca7342528474e
 
 
 int main() {
