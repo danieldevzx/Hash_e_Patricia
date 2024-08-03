@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "../include/patricia_TAD.h"
 
-#include <unistd.h>
+
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
 
