@@ -125,8 +125,8 @@ char **fCaminhoArquivos(char **arquivos, int qtd) {
 }
 
 // Função para processar todos os arquivos e criar a lista de palavras
-Node *fListaDePalavras(char **vetorDeArquivos, int qtd) {
-    Node *list = NULL;
+NodeL *fListaDePalavras(char **vetorDeArquivos, int qtd) {
+    NodeL *list = NULL;
     for (int i = 0; i < qtd; i++) {
         tArquivo arquivo;
         if (!fAbreArquivo(vetorDeArquivos[i], &arquivo)) {

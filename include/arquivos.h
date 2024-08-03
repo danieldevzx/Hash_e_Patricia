@@ -41,6 +41,6 @@ char **fVetorDeArquivos(tArquivo *arquivos, int n);
 char **fCaminhoArquivos(char **arquivos, int qtd);
 
 //Função que cria uma lista para as palavras 
-Node *fListaDePalavras(char **vetorDeArquivos, int qtd);
+NodeL *fListaDePalavras(char **vetorDeArquivos, int qtd);
 
 #endif

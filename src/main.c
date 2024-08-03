@@ -1,22 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-<<<<<<< HEAD
-=======
-
-
-#include "patricia_TAD.c"
->>>>>>> cb38f5dd3f46045b4e92db261c1ca7342528474e
 #include <unistd.h>
 #include "../include/patricia_TAD.h"
-
-
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
-<<<<<<< HEAD
-=======
-
->>>>>>> cb38f5dd3f46045b4e92db261c1ca7342528474e
 
 
 int main() {
@@ -44,7 +32,7 @@ int main() {
     char **arquivos = fCaminhoArquivos(vetorDeArquivos, qtd);
 
     // Criar a lista de palavras
-    Node *listaDePalavras = fListaDePalavras(arquivos, qtd);
+    NodeL *listaDePalavras = fListaDePalavras(arquivos, qtd);
     if (listaDePalavras == NULL) {
         printf("Erro ao criar a lista de palavras\n");
         // Liberar memória
@@ -60,7 +48,7 @@ int main() {
 
     // Imprimir a lista de palavras
     printf("Lista de palavras:\n");
-    Node *current = listaDePalavras;
+    NodeL *current = listaDePalavras;
     int op = 0;
     while (current != NULL) {
         printf("Palavra %d:%s\n", op+1, current->data);
