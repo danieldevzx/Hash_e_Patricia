@@ -53,10 +53,10 @@ void fConvertToBin(char *key, char *bin, int size){
 }
 
 typeBit fGetNBit(typeIndex index, char *key){
-
     if(index == 0){return 0;}
     return key[index-1];
 }
+
 int IsOutside(pNode node){
     return (node->type == Outside);
 }
@@ -68,19 +68,30 @@ pNode fGenOutsideNode(char *key){
     node->Node.key = key;
     return node;
 }
-pNode fGenInsideNode(typeIndex nodeIndex, pNode *lef, pNode *rig){}
+
+pNode fGenInsideNode(typeIndex nodeIndex, pNode *lef, pNode *rig){
+    pNode node;
+    node = (pNode) malloc (sizeof(tNode));
+    node->type = Inside;
+    node->Node.insideNode.index = nodeIndex;
+    node->Node.insideNode.lef = *lef;
+    node->Node.insideNode.rig = *rig;
+    return node;
+}
 
 pNode fInsertIn(char *key, pNode *root, int index){
     pNode node;
     if(IsOutside(*root) || index < (*root)-> Node.insideNode.index){
         node = fGenOutsideNode(key);
-        if (fGetNBit(index, key) == 1){
+        if (fGetNBit(index, key) == '1'){
             return (fGenInsideNode(index, root, &node));
         }
-        else {return (fGenInsideNode(index, &node, root));}
+        else {
+            return (fGenInsideNode(index, &node, root));
+        }
     }
-    else{
-        if(fGetNBit((*root)->Node.insideNode.index, key) == 1){
+    else {
+        if(fGetNBit((*root)->Node.insideNode.index, key) == '1'){
             (*root)->Node.insideNode.rig = fInsertIn(key, &(*root)->Node.insideNode.rig, index);
         }
         else{
@@ -89,15 +100,16 @@ pNode fInsertIn(char *key, pNode *root, int index){
         return (*root);
     }
 }
+
 pNode fInsertWord(char *key, pNode *root){
     pNode node; 
     int index;
-    int len = sizeof(key)-1;
+    int len = strlen(key);
     if(*root == NULL) return (fGenOutsideNode(key));
-    else{
+    else {
         node = *root;
         while(!IsOutside(node)){
-            if(fGetNBit(node->Node.insideNode.index, key) == 1) node = node->Node.insideNode.rig;
+            if(fGetNBit(node->Node.insideNode.index, key) == '1') node = node->Node.insideNode.rig;
             else node = node->Node.insideNode.lef;
         }
         index = 1;
@@ -105,10 +117,26 @@ pNode fInsertWord(char *key, pNode *root){
             index++;
         }
         if(index > len) {
-            printf("Erro: chave ja inserida");
+            printf("Erro: chave já inserida\n");
             return *root;
         }
-        else return (fInsertIn(key, root, index));
+        else {
+            return (fInsertIn(key, root, index));
+        }
     }
 }
-void fSearch(char *key, pNode node);
+
+void fSearch(char *key, pNode node){
+    while(!IsOutside(node)){
+        if(fGetNBit(node->Node.insideNode.index, key) == '1') {
+            node = node->Node.insideNode.rig;
+        } else {
+            node = node->Node.insideNode.lef;
+        }
+    }
+    if(strcmp(node->Node.key, key) == 0) {
+        printf("Chave encontrada: %s\n", key);
+    } else {
+        printf("Chave não encontrada: %s\n", key);
+    }
+}
