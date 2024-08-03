@@ -96,7 +96,7 @@ pNode fInsertIn(char *key, pNode *root, int index){
         }
     }
     else {
-        if(fGetNBit((*root)->Node.insideNode.index, key) == '1'){ // Verifica o bit da chave no índice do nó interno
+        if(fGetNBit((*root)->Node.insideNode.index, key) == 1){ // Verifica o bit da chave no índice do nó interno
             (*root)->Node.insideNode.rig = fInsertIn(key, &(*root)->Node.insideNode.rig, index); // Insere à direita
         }
         else{
@@ -110,12 +110,12 @@ pNode fInsertIn(char *key, pNode *root, int index){
 pNode fInsertWord(char *key, pNode *root){
     pNode node; 
     int index;
-    int len = strlen(key); // Obtém o comprimento da chave
-    if(*root == NULL) return fGenOutsideNode(key); // Se a raiz for nula, gera um nó externo
+    int len = sizeof(key) - 1; // Obtém o comprimento da chave
+    if(*root == NULL) {return (fGenOutsideNode(key));} // Se a raiz for nula, gera um nó externo
     else {
         node = *root; 
         while(!IsOutside(node)){ // Enquanto o nó não for externo
-            if(fGetNBit(node->Node.insideNode.index, key) == '1') node = node->Node.insideNode.rig; // Vai para a direita se o bit for 1
+            if(fGetNBit(node->Node.insideNode.index, key) == 1) node = node->Node.insideNode.rig; // Vai para a direita se o bit for 1
             else node = node->Node.insideNode.lef; // Vai para a esquerda se o bit for 0
         }
         index = 1;
@@ -132,19 +132,18 @@ pNode fInsertWord(char *key, pNode *root){
     }
 }
 
-// Função para buscar uma chave na árvore Patricia
-void fSearch(char *key, pNode node){
+void fSearch(char *key, pNode node){ // Função para buscar uma chave na árvore Patricia
     while(!IsOutside(node)){ // Enquanto o nó não for externo
-        if(fGetNBit(node->Node.insideNode.index, key) == '1') {
-            node = node->Node.insideNode.rig; // Vai para a direita se o bit for 1
+        if(fGetNBit(node->Node.insideNode.index, key) == 1) {
+            node = node->Node.insideNode.rig; // Direita se o bit for 1
         } else {
-            node = node->Node.insideNode.lef; // Vai para a esquerda se o bit for 0
+            node = node->Node.insideNode.lef; // Esquerda se o bit for 0
         }
     }
     if(strcmp(node->Node.key, key) == 0) { // Compara a chave com a chave do nó externo
-        printf("Chave encontrada: %s\n", key); // Chave encontrada
+        printf("Chave encontrada\n");
     } else {
-        printf("Chave não encontrada: %s\n", key); // Chave não encontrada
+        printf("Chave não encontrada\n");
     }
 }
 
