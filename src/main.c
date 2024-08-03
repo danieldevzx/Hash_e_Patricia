@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-<<<<<<< HEAD
+
 
 #include "patricia_TAD.c"
-=======
 #include <unistd.h>
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
->>>>>>> master
+
 
 
 int main() {
