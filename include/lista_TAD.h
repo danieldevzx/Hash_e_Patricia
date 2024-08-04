@@ -6,25 +6,25 @@
 
 
 //Estrutura de uma lista encadeada 
-typedef struct NodeL {
+typedef struct tNodeP {
     char *data;
-    struct NodeL *next;
-} NodeL;
+    struct tNodeP *next;
+} tNodeP;
 
 // Função para criar um novo nó
-NodeL* fCriaNode(const char *data);
+tNodeP* fCriatNodeP(const char *data);
 
 // Função para verificar se o valor já está na lista
-int fVerifica(NodeL *head, const char *data);
+int fVerifica(tNodeP *head, const char *data);
 
 // Função para inserir um valor na lista, se não for duplicado
-void fInsere(NodeL **head, const char *data);
+void fInsere(tNodeP **head, const char *data);
 
 // Função para liberar a memória da lista
-void fLiberaMemoria(NodeL *head);
+void fLiberaMemoria(tNodeP *head);
 
 // Função para processar a segunda linha de um arquivo
-int fAdicionaIgredientes(FILE *file, NodeL **list);
+int fAdicionaIgredientes(FILE *file, tNodeP **list);
 
-int fTamLista(NodeL *list);
+int fTamLista(tNodeP *list);
 #endif

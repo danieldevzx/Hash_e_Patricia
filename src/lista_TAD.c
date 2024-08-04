@@ -5,24 +5,24 @@
 #include <string.h>
 
 // Função para criar um novo nó
-NodeL* fCriaNodeL(const char *data) {
-    NodeL *newNodeL = (NodeL *)malloc(sizeof(NodeL));
-    if (newNodeL == NULL) {
+tNodeP* fCriatNodeP(const char *data) {
+    tNodeP *newtNodeP = (tNodeP *)malloc(sizeof(tNodeP));
+    if (newtNodeP == NULL) {
         perror("Erro ao alocar memória para um novo nó");
         exit(EXIT_FAILURE);
     }
-    newNodeL->data = strdup(data);
-    if (newNodeL->data == NULL) {
+    newtNodeP->data = strdup(data);
+    if (newtNodeP->data == NULL) {
         perror("Erro ao duplicar string");
         exit(EXIT_FAILURE);
     }
-    newNodeL->next = NULL;
-    return newNodeL;
+    newtNodeP->next = NULL;
+    return newtNodeP;
 }
 
 // Função para verificar se o valor já está na lista
-int fVerifica(NodeL *head, const char *data) {
-    NodeL *current = head;
+int fVerifica(tNodeP *head, const char *data) {
+    tNodeP *current = head;
     while (current != NULL) {
         if (strcmp(current->data, data) == 0) {
             return 1; // Valor encontrado
@@ -33,20 +33,20 @@ int fVerifica(NodeL *head, const char *data) {
 }
 
 // Função para inserir um valor na lista, se não for duplicado
-void fInsere(NodeL **head, const char *data) {
+void fInsere(tNodeP **head, const char *data) {
     if (*head == NULL) {
-        *head = fCriaNodeL(data);
+        *head = fCriatNodeP(data);
     } else if (!fVerifica(*head, data)) {
-        NodeL *newNodeL = fCriaNodeL(data);
-        newNodeL->next = *head;
-        *head = newNodeL;
+        tNodeP *newtNodeP = fCriatNodeP(data);
+        newtNodeP->next = *head;
+        *head = newtNodeP;
     }
 }
 
 // Função para liberar a memória da lista
-void fLiberaMemoria(NodeL *head) {
-    NodeL *current = head;
-    NodeL *next;
+void fLiberaMemoria(tNodeP *head) {
+    tNodeP *current = head;
+    tNodeP *next;
     while (current != NULL) {
         next = current->next;
         free(current->data);
@@ -90,7 +90,7 @@ void fRemoveCtr(char *str) {
 }
 
 //Função que adiciona os ingredientes em uma lista
-int fAdicionaIgredientes(FILE *file, NodeL **list) {
+int fAdicionaIgredientes(FILE *file, tNodeP **list) {
     char buffer[1024];
 
     if (fgets(buffer, sizeof(buffer), file) == NULL) {
@@ -116,9 +116,9 @@ int fAdicionaIgredientes(FILE *file, NodeL **list) {
     return 1;
 }
 // Função para contar o número de elementos na lista
-int fTamLista(NodeL *list) {
+int fTamLista(tNodeP *list) {
     int count = 0;
-    NodeL *current = list;
+    tNodeP *current = list;
 
     while (current != NULL) {
         count++;

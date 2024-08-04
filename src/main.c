@@ -5,40 +5,43 @@
 #include "../include/patricia_TAD.h"
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
+#include "../include/hash_TAD.h"
 
 
 int main() {
-    tArquivo arquivo;
+    tArquivo aEntrada;
+    char entrada[20];
+    char caminho[50]; 
 
-    // Abrir o arquivo de entrada
-    fAbreArquivo("arq/entrada.txt", &arquivo);
+    printf("Digite o nome do arquivo de entrada: ");
+    scanf("%s", entrada);
+
+    sprintf(caminho, "arq/%s", entrada);
+
+    if (!fAbreArquivo(caminho, &aEntrada) != 0) {
+        fprintf(stderr, "Erro ao abrir o arquivo de entrada\n");
+        return 1;
+    }
 
     // Ler a quantidade de arquivos
-    int qtd = fQtdDeArquivos(&arquivo);
-
+    int qtd = fQtdDeArquivos(&aEntrada);
     printf("Quantidade de arquivos: %d\n", qtd);
 
     // Criar o vetor de nomes de arquivos
-    char **vetorDeArquivos = fVetorDeArquivos(&arquivo, qtd);
+    char **vetorDeArquivos = fVetorDeArquivos(&aEntrada, qtd);
     if (vetorDeArquivos == NULL) {
-        printf("Erro ao ler os nomes dos arquivos\n");
-        fFechaArquivo(&arquivo);
+        fprintf(stderr, "Erro ao ler os nomes dos arquivos\n");
+        fFechaArquivo(&aEntrada);
         return 1;
     }
 
     // Fechar o arquivo de entrada
-    fFechaArquivo(&arquivo);
+    fFechaArquivo(&aEntrada);
+
     // Criar o vetor de caminhos completos
     char **arquivos = fCaminhoArquivos(vetorDeArquivos, qtd);
-
-    // Criar a lista de palavras
-    NodeL *listaDePalavras = fListaDePalavras(arquivos, qtd);
-    if (listaDePalavras == NULL) {
-        printf("Erro ao criar a lista de palavras\n");
-        // Liberar memória
-        for (int i = 0; i < qtd; i++) {
-            free(arquivos[i]);
-        }
+    if (arquivos == NULL) {
+        fprintf(stderr, "Erro ao criar o vetor de caminhos completos\n");
         for (int i = 0; i < qtd; i++) {
             free(vetorDeArquivos[i]);
         }
@@ -46,28 +49,57 @@ int main() {
         return 1;
     }
 
-    // Imprimir a lista de palavras
-    printf("Lista de palavras:\n");
-    NodeL *current = listaDePalavras;
-    int op = 0;
-    while (current != NULL) {
-        printf("Palavra %d:%s\n", op+1, current->data);
-        current = current->next;
-        op += 1;
+    // Criar a lista de palavras
+    tNodeP *listaDePalavras = fListaDePalavras(arquivos, qtd);
+    if (listaDePalavras == NULL) {
+        fprintf(stderr, "Erro ao criar a lista de palavras\n");
+        for (int i = 0; i < qtd; i++) {
+            free(arquivos[i]);
+        }
+        free(arquivos);
+        for (int i = 0; i < qtd; i++) {
+            free(vetorDeArquivos[i]);
+        }
+        free(vetorDeArquivos);
+        return 1;
     }
 
-    // Liberar a lista de palavras
-    fLiberaMemoria(listaDePalavras);
+    int tam = fTamLista(listaDePalavras);
 
-    // Liberar a memória do vetor de arquivos
+    // Criar o vetor de palavras
+    tPalavra v[tam];
+    fProcessaPalavras(listaDePalavras, arquivos, qtd, v);
+   
+    // Criar a tabela hash
+    HashTable *hashTable = fCriaTabelaHash(tam);
+
+    // Inserir as palavras na tabela hash
+    for (int i = 0; i < tam; i++) {
+        fInsereHash(hashTable, v[i]);
+    }
+    char palavraBuscada[300];
+    printf("Digite a palavra para buscar: ");
+    scanf("%s", palavraBuscada);
+    tPalavra *resultado = fPesquisaHash(hashTable, palavraBuscada);
+    if(resultado != NULL){
+        fPrintPalavra(*resultado);
+    }
+    // Liberar a memória
+    fLiberaHash(hashTable);
+    fLiberaMemoria(listaDePalavras);
+    for (int i = 0; i < tam; i++) {
+        free(v[i].nome);
+        fLiberaLista(v[i].node);
+    }
     for (int i = 0; i < qtd; i++) {
         free(arquivos[i]);
     }
-    // Liberar a memória de vetorDeArquivos
+    free(arquivos);
     for (int i = 0; i < qtd; i++) {
         free(vetorDeArquivos[i]);
     }
     free(vetorDeArquivos);
+
 
     printf("Vamo que vai dar bom");
     char test[] = "abacaxi"; // Palavra teste pra conversão em binário

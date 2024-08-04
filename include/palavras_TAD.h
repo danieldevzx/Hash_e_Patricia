@@ -9,15 +9,37 @@
 #define PALAVRAS_TAD_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "../include/lista_TAD.h"
+#include "../include/arquivos.h"
 
-typedef struct{
-    int qtd;
-    int arq;
+// Estrutura para armazenar a quantidade e o número do arquivo
+typedef struct tID {
+    int qtd; // Quantidade de aparições
+    int arq; // Número do arquivo
 } tID;
-typedef struct{
-    char *name;
-    tID vetor[];
+
+// Estrutura para o nó da lista encadeada que contém tID
+typedef struct tNodeID {
+    tID data;
+    struct tNodeID *next;
+} tNodeID;
+
+// Estrutura para armazenar uma palavra e a lista encadeada de tID
+typedef struct {
+    char *nome; // Nome da palavra
+    tNodeID *node; // Ponteiro para o início da lista encadeada de tID
 } tPalavra;
 
-void fSalvaPalavra(tPalavra *nome, tID *valor);
-#endif
+// Funções declaradas
+tID fCriaID(int qtd, int arq);
+tNodeID *fNodeDeID(tID aux);
+void fAdicionaNode(tNodeID **head, tID aux);
+void fSalvaPalavra(tPalavra *palavra, char *nome, tNodeID *id);
+void fLiberaLista(tNodeID *head);
+void fProcessaPalavras(tNodeP *listaDePalavras, char **arquivos, int qtd, tPalavra *v);
+void fPrintPalavra(tPalavra palavra);
+void fPrintDados(tPalavra *v, int tam);
+
+#endif // PALAVRAS_TAD_H

@@ -125,8 +125,8 @@ char **fCaminhoArquivos(char **arquivos, int qtd) {
 }
 
 // Função para processar todos os arquivos e criar a lista de palavras
-NodeL *fListaDePalavras(char **vetorDeArquivos, int qtd) {
-    NodeL *list = NULL;
+tNodeP *fListaDePalavras(char **vetorDeArquivos, int qtd) {
+    tNodeP *list = NULL;
     for (int i = 0; i < qtd; i++) {
         tArquivo arquivo;
         if (!fAbreArquivo(vetorDeArquivos[i], &arquivo)) {
@@ -139,4 +139,58 @@ NodeL *fListaDePalavras(char **vetorDeArquivos, int qtd) {
         fFechaArquivo(&arquivo);
     }
     return list;
+}
+
+
+// Função para transformar uma string para minúsculas
+void strToLower(char *str) {
+    for ( ; *str; ++str) *str = tolower((unsigned char) *str);
+}
+
+// Função para contar aparições de ingredientes na linha seguinte
+int fContaIngredientes(char *nomeArquivo, char *ingredientes) {
+    tArquivo arquivo;
+    if (!fAbreArquivo(nomeArquivo, &arquivo)) {
+        printf("Erro ao abrir o arquivo %s\n", nomeArquivo);
+        return -1;
+    }
+
+    char buffer[1024];
+    char bufferLower[1024];
+
+    // Pula a primeira linha
+    if (fgets(buffer, sizeof(buffer), arquivo.arquivo) == NULL) {
+        printf("Erro ao ler o arquivo\n");
+        fFechaArquivo(&arquivo);
+        return -1;
+    }
+
+    // Lê a segunda linha (ingredientes)
+    if (fgets(buffer, sizeof(buffer), arquivo.arquivo) == NULL) {
+        printf("Erro ao ler o arquivo\n");
+        fFechaArquivo(&arquivo);
+        return -1;
+    }
+
+    // Lê a terceira linha (instruções)
+    if (fgets(buffer, sizeof(buffer), arquivo.arquivo) == NULL) {
+        printf("Erro ao ler o arquivo\n");
+        fFechaArquivo(&arquivo);
+        return -1;
+    }
+
+    strcpy(bufferLower, buffer);
+    strToLower(bufferLower);
+
+    char ingredienteLower[1024];
+    strcpy(ingredienteLower, ingredientes);
+    strToLower(ingredienteLower);
+    int count = 0;
+    char *pos = bufferLower;
+        while ((pos = strstr(pos, ingredienteLower)) != NULL) {
+        count++;
+        pos += strlen(ingredienteLower);
+    }
+    fFechaArquivo(&arquivo);
+    return count;
 }

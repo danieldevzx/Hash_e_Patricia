@@ -15,15 +15,12 @@
 
 #include <stdio.h>
 #include "../include/lista_TAD.h"
+#include "../include/palavras_TAD.h"
 
 
 typedef struct {
     FILE *arquivo;
 } tArquivo;
-
-
-int abreArquivo(char *nome, tArquivo *arquivo);
-int fechaArquivo(char *nome, tArquivo *arquivo);
 
 // Abre um arquivo e retorna 1 se a abertura foi bem-sucedida, e 0 caso contrário.
 int fAbreArquivo(char *nome, tArquivo *arquivo);
@@ -41,6 +38,9 @@ char **fVetorDeArquivos(tArquivo *arquivos, int n);
 char **fCaminhoArquivos(char **arquivos, int qtd);
 
 //Função que cria uma lista para as palavras 
-NodeL *fListaDePalavras(char **vetorDeArquivos, int qtd);
+tNodeP *fListaDePalavras(char **vetorDeArquivos, int qtd);
+
+int fContaIngredientes(char *nomeArquivo, char *ingredientes);
+
 
 #endif
