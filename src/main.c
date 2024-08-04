@@ -83,6 +83,8 @@ int main() {
     tPalavra *resultado = fPesquisaHash(hashTable, palavraBuscada);
     if(resultado != NULL){
         fPrintPalavra(*resultado);
+    }else{
+        printf("Palavra não encontrada\n");
     }
     // Liberar a memória
     fLiberaHash(hashTable);
