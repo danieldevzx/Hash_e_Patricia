@@ -12,6 +12,12 @@
 #ifndef PATRICIA_TAD_H_INCLUDED
 #define PATRICIA_TAD_H_INCLUDED
 
+typedef struct tInvertedIndex *pInvertedIndexes;
+typedef struct tInvertedIndex{
+    int qtnd, idDoc;
+    int len;
+}tInvertedIndex;
+
 typedef int typeIndex;
 typedef int typeBit;
 typedef enum{
@@ -28,20 +34,19 @@ typedef struct tNode{
             pNode lef, rig;
         }insideNode;
         char *key;
+        pInvertedIndexes indexesList;
     }Node;
 }tNode;
 
-void fPrintKey(char *key);
+void fPrintKey(char *key, int len);
 void fConvertToBin(char *key, char *bin, int size);
 typeBit fGetNBit(typeIndex index, char *key);
 int IsOutside(pNode node);
-pNode fGenOutsideNode(char *key);
+pNode fGenOutsideNode(char *key, int idDoc);
 pNode fGenInsideNode(int nodeIndex, pNode *lef, pNode *rig);
-pNode fInsertIn(char *key, pNode *node, int index);
-pNode fInsertWord(char *key, pNode *node);
+pNode fInsertIn(char *key, pNode node, int index, int idDoc);
+pNode fInsertWord(char *key, pNode *node, int len, int idDoc);
+void fPrintInvertedIndexes(pInvertedIndexes indexesList);
 void fSearch(char *key, pNode node);
-
-
-
 
 #endif
