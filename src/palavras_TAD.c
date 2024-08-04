@@ -76,3 +76,24 @@ void fPrintDados(tPalavra *v, int tam){
         printf("\n");
     }
 }
+
+// Função que retorna o maior tID de uma tPalavra
+tID fMaiorID(tPalavra *palavra) {
+    // Inicializa o maiorID com valores padrão
+    tID maiorID = {0, 0};
+    
+    // Ponteiro para iterar sobre a lista encadeada de tID
+    tNodeID *current = palavra->node;
+    
+    // Itera pela lista encadeada
+    while (current != NULL) {
+        // Compara as quantidades para encontrar o maior
+        if (current->data.qtd > maiorID.qtd) {
+            maiorID = current->data;
+        }
+        // Avança para o próximo nó
+        current = current->next;
+    }
+    
+    return maiorID;
+}

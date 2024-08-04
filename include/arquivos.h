@@ -9,38 +9,27 @@
 
     Definições e declarações de funções para manipulação de arquivos e dados de receitas.
 */
-
 #ifndef ARQUIVOS_H
 #define ARQUIVOS_H
 
 #include <stdio.h>
-#include "../include/lista_TAD.h"
-#include "../include/palavras_TAD.h"
+#include "lista_TAD.h"
+#include "palavras_TAD.h"
 
+// Declaração antecipada de tID
+typedef struct tID tID;
 
 typedef struct {
     FILE *arquivo;
 } tArquivo;
 
-// Abre um arquivo e retorna 1 se a abertura foi bem-sucedida, e 0 caso contrário.
 int fAbreArquivo(char *nome, tArquivo *arquivo);
-
-// Fecha o arquivo.
 void fFechaArquivo(tArquivo *arquivo);
-
-// Retorna a quantidade de arquivos (receitas) ou -1 se a contagem falhar.
 int fQtdDeArquivos(tArquivo *arquivo);
-
-// Retorna um vetor de strings contendo os nomes dos arquivos (receitas).
 char **fVetorDeArquivos(tArquivo *arquivos, int n);
-
-//Apos decobrirmos qual é são os nomes essa função retorna o caminho correto até o arquivos (receitas).
 char **fCaminhoArquivos(char **arquivos, int qtd);
-
-//Função que cria uma lista para as palavras 
 tNodeP *fListaDePalavras(char **vetorDeArquivos, int qtd);
-
 int fContaIngredientes(char *nomeArquivo, char *ingredientes);
+void fExibeDadosDoArquivo(tID id);
 
-
-#endif
+#endif // ARQUIVOS_H

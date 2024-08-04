@@ -11,9 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/lista_TAD.h"
-#include "../include/arquivos.h"
-
+#include "lista_TAD.h"
+#include "arquivos.h"
 // Estrutura para armazenar a quantidade e o número do arquivo
 typedef struct tID {
     int qtd; // Quantidade de aparições
@@ -32,7 +31,6 @@ typedef struct {
     tNodeID *node; // Ponteiro para o início da lista encadeada de tID
 } tPalavra;
 
-// Funções declaradas
 tID fCriaID(int qtd, int arq);
 tNodeID *fNodeDeID(tID aux);
 void fAdicionaNode(tNodeID **head, tID aux);
@@ -41,5 +39,6 @@ void fLiberaLista(tNodeID *head);
 void fProcessaPalavras(tNodeP *listaDePalavras, char **arquivos, int qtd, tPalavra *v);
 void fPrintPalavra(tPalavra palavra);
 void fPrintDados(tPalavra *v, int tam);
+tID fMaiorID(tPalavra *palavra);
 
 #endif // PALAVRAS_TAD_H

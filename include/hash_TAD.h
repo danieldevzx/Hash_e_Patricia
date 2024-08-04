@@ -1,7 +1,7 @@
 #ifndef HASH_TAD_H
 #define HASH_TAD_H
 
-#include "../include/palavras_TAD.h"
+#include "palavras_TAD.h"
 
 // Definição da estrutura tNodeH
 typedef struct tNodeH {

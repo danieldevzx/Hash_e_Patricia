@@ -194,3 +194,23 @@ int fContaIngredientes(char *nomeArquivo, char *ingredientes) {
     fFechaArquivo(&arquivo);
     return count;
 }
+
+// Função que exibe os dados do arquivo baseado no tID.arq
+void fExibeDadosDoArquivo(tID id) {
+    char caminho[1024];
+    snprintf(caminho, sizeof(caminho), "arq/ArquivosEntrada/arquivo%d.txt", id.arq);
+
+    tArquivo arquivo;
+    if (!fAbreArquivo(caminho, &arquivo)) {
+        printf("Erro ao abrir o arquivo %s\n", caminho);
+        return;
+    }
+
+    printf("Arquivo [%s]\n", caminho);
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), arquivo.arquivo) != NULL) {
+        printf("%s", buffer);
+    }
+    printf("\n");
+    fFechaArquivo(&arquivo);
+}
