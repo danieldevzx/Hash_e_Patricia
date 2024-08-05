@@ -5,6 +5,31 @@
 
 #include "../include/patricia_TAD.h"
 
+
+// Estrutura de um nó da árvore Patrícia
+struct PatriciaNode {
+    char *key;
+    tIndiceInvertido indiceInvertido;
+    PatriciaNode *left, *right;
+};
+
+// Cria uma nova árvore Patrícia
+PatriciaTree* createPatricia() {
+    PatriciaTree *tree = (PatriciaTree*) malloc(sizeof(PatriciaTree));
+    tree->root = NULL;
+    return tree;
+}
+
+// Função auxiliar para criar um novo nó da árvore Patrícia
+PatriciaNode* createNode(const char *key, tIndiceInvertido indice) {
+    PatriciaNode *newNode = (PatriciaNode*) malloc(sizeof(PatriciaNode));
+    newNode->key = strdup(key);
+    newNode->indiceInvertido = indice;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+//fiz agr
+
 // Função para imprimir a chave em formato binário
 void fPrintKey(char *key, int len){
     printf("\n");
@@ -160,3 +185,14 @@ void fSearch(char *key, pNode node){ // Função para buscar uma chave na árvor
         printf("\nChave não encontrada\n");
     }
 }
+
+
+// Função para imprimir um nó da árvore Patrícia
+void printPatriciaNode(PatriciaNode *node) {
+    if (node != NULL) {
+        printf("Chave: %s\n", node->key);
+        printf("Índice Invertido: %d\n", node->indiceInvertido);
+        // Adicionar impressão do índice invertido detalhado, se necessário
+    }
+}
+//fiz agr tb
