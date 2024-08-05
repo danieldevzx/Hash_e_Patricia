@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#ifndef UTIL_H
+#define UTIL_H
+
 // Função para limpar a tela
 void limpa() {
     #ifdef _WIN32
