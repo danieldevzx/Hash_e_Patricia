@@ -8,6 +8,45 @@
 #include "../include/patricia_TAD.h"
 #include "../include/util.h"
 
+void pesquisa(PatriciaTree *patricia) {
+    char palavra[256];
+    printf("Digite a palavra que deseja pesquisar: ");
+    scanf("%s", palavra);
+    limpa();
+
+    PatriciaNode *result = searchPatricia(patricia, palavra);
+    if (result != NULL) {
+        printPatriciaNode(result);
+    } else {
+        printf("Palavra não encontrada.\n");
+    }
+    pause();
+}
+
+void binarioPesquisa(PatriciaTree *patricia) {
+    char palavra[256];
+    printf("Digite a palavra que deseja converter para binário e pesquisar: ");
+    scanf("%s", palavra);
+    limpa();
+
+    char *binario = palavraParaBinario(palavra);
+    printf("Palavra em binário: %s\n", binario);
+
+    PatriciaNode *result = searchPatricia(patricia, binario);
+    if (result != NULL) {
+        printPatriciaNode(result);
+    } else {
+        printf("Palavra não encontrada.\n");
+    }
+    free(binario);
+    pause();
+}
+
+void imprimeIndiceInvertido(PatriciaTree *patricia) {
+    printPatricia(patricia);
+    pause();
+}
+//Funções pesquisa, binarioPesquisa, e imprimeIndiceInvertido
 
 // Função para liberar recursos e memória
 void liberarRecursos(char **vetorDeArquivos, char **arquivos, tNodeP *listaDePalavras, 
@@ -184,7 +223,6 @@ void menu() {
     // Liberar a memória
     liberarRecursos(vetorDeArquivos, arquivos, listaDePalavras, v, qtd, tam, hashTable);
 }
-
 
 int main() {
 
