@@ -187,12 +187,34 @@ void fSearch(char *key, pNode node){ // Função para buscar uma chave na árvor
 }
 
 
-// Função para imprimir um nó da árvore Patrícia
+char* palavraParaBinario(const char *palavra) {
+    int len = strlen(palavra);
+    char *bin = (char *)malloc((len * 5 + 1) * sizeof(char));
+    fConvertToBin((char *)palavra, bin, len);
+    return bin;
+}
+
+void insertPatricia(PatriciaTree *tree, const char *key, tIndiceInvertido indice) {
+    char *binKey = palavraParaBinario(key);
+    tree->root = fInsertWord(binKey, &tree->root, strlen(key), indice);
+}
+
+PatriciaNode* searchPatricia(PatriciaTree *tree, const char *key) {
+    char *binKey = palavraParaBinario(key);
+    fSearch(binKey, tree->root);
+    return NULL;  // Ajuste de retorno, pode ser modificado conforme a necessidade
+}
+
 void printPatriciaNode(PatriciaNode *node) {
     if (node != NULL) {
-        printf("Chave: %s\n", node->key);
-        printf("Índice Invertido: %d\n", node->indiceInvertido);
-        // Adicionar impressão do índice invertido detalhado, se necessário
+        printf("Palavra: %s\n", node->key);
+        fPrintInvertedIndexes(node->indiceInvertido);
+    }
+}
+
+void printPatricia(PatriciaTree *tree) {
+    if (tree->root != NULL) {
+        printPatriciaNode(tree->root);
     }
 }
 //fiz agr tb
