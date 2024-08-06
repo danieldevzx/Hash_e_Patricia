@@ -1,59 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
 #include "../include/arquivos.h"
 #include "../include/lista_TAD.h"
 #include "../include/hash_TAD.h"
 #include "../include/patricia_TAD.h"
 #include "../include/util.h"
 
-void pesquisa(PatriciaTree *patricia) {
-    char palavra[256];
-    printf("Digite a palavra que deseja pesquisar: ");
-    scanf("%s", palavra);
-    limpa();
-
-    PatriciaNode *result = searchPatricia(patricia, palavra);
-    if (result != NULL) {
-        printPatriciaNode(result);
-    } else {
-        printf("Palavra não encontrada.\n");
-    }
-    pause();
-}
-
-void binarioPesquisa(PatriciaTree *patricia) {
-    char palavra[256];
-    printf("Digite a palavra que deseja converter para binário e pesquisar: ");
-    scanf("%s", palavra);
-    limpa();
-
-    char *binario = palavraParaBinario(palavra);
-    printf("Palavra em binário: %s\n", binario);
-
-    PatriciaNode *result = searchPatricia(patricia, binario);
-    if (result != NULL) {
-        printPatriciaNode(result);
-    } else {
-        printf("Palavra não encontrada.\n");
-    }
-    free(binario);
-    pause();
-}
-
-void imprimeIndiceInvertido(PatriciaTree *patricia) {
-    printPatricia(patricia);
-    pause();
-}
-//Funções pesquisa, binarioPesquisa, e imprimeIndiceInvertido
-
 // Função para liberar recursos e memória
 void liberarRecursos(char **vetorDeArquivos, char **arquivos, tNodeP *listaDePalavras, 
-                     tPalavra *v, int qtd, int tam, HashTable *hashTable) {
-    fLiberaHash(hashTable);
-    fLiberaMemoria(listaDePalavras);
-    
+                     tPalavra *v, int qtd, int tam, HashTable *hashTable, tNodePT *patricia) {
+    if (hashTable) fLiberaHash(hashTable);
+    if (listaDePalavras) fLiberaMemoria(listaDePalavras);
+    if (patricia) fLiberaPatricia(patricia);
+
     for (int i = 0; i < tam; i++) {
         free(v[i].nome);
         fLiberaLista(v[i].node);
@@ -67,11 +28,10 @@ void liberarRecursos(char **vetorDeArquivos, char **arquivos, tNodeP *listaDePal
     free(vetorDeArquivos);
 }
 
-// Função para processar a busca por palavra
-void buscarPalavra(HashTable *hashTable) {
+// Função para buscar uma palavra nas estruturas
+void buscarPalavra(HashTable *hashTable, tNodePT *patricia, int qtd) {
     char palavraBuscada[50];
 
-    printf("Digite a palavra para buscar: ");
     if (fgets(palavraBuscada, sizeof(palavraBuscada), stdin) != NULL) {
         size_t len = strlen(palavraBuscada);
         if (len > 0 && palavraBuscada[len - 1] == '\n') {
@@ -80,46 +40,55 @@ void buscarPalavra(HashTable *hashTable) {
     }
 
     // Pesquisa na tabela hash
+    printf("\n--- Resultado da Pesquisa na Tabela Hash ---\n");
     tPalavra *resultadoHash = fPesquisaHash(hashTable, palavraBuscada);
     if (resultadoHash != NULL) {
-        printf("Palavra encontrada na tabela hash:\n");
         fPrintPalavra(*resultadoHash);
-        tID aux = fMaiorID(resultadoHash);
+        tID aux = fMaiorID(resultadoHash, qtd);
         printf("\t|MAIS RELEVANTE:<%d, %d>|\n", aux.qtd, aux.arq);
         fExibeDadosDoArquivo(aux);
     } else {
         printf("Palavra '%s' não encontrada na tabela hash\n", palavraBuscada);
     }
+
+    // Pesquisa na árvore Patricia
+    printf("\n--- Resultado da Pesquisa na Árvore Patricia ---\n");
+    tNodePT *resultadoPatricia = fPesquisaPatricia(patricia, palavraBuscada);
+    if (resultadoPatricia != NULL) {
+        fPrintPalavra(resultadoPatricia->node.item);
+        tID aux = fMaiorID(&resultadoPatricia->node.item, qtd);
+        printf("\t| MAIS RELEVANTE: <%d, %d> |\n", aux.qtd, aux.arq);
+        fExibeDadosDoArquivo(aux);
+    } else {
+        printf("Palavra '%s' não encontrada na árvore Patricia.\n", palavraBuscada);
+    }
 }
 
-void menu() {
+int main() {
     tArquivo aEntrada;
     char entrada[20];
     char caminho[50];
-    
+
     // Leitura do nome do arquivo de entrada
     printf("Digite o nome do arquivo de entrada: ");
-    scanf("%s", entrada);
+    scanf("%19s", entrada);
     sprintf(caminho, "arq/%s", entrada);
-
-    if (!fAbreArquivo(caminho, &aEntrada) != 0) {
-        fprintf(stderr, "Erro ao abrir o arquivo de entrada\n");
-        return;
+    
+    if (fAbreArquivo(caminho, &aEntrada) == 0) {
+        fprintf(stderr, "Erro ao abrir o arquivo de entrada.\n");
+        return 1;
     }
     limpa();
 
     // Ler a quantidade de arquivos
     int qtd = fQtdDeArquivos(&aEntrada);
-    printf("Quantidade de arquivos: %d\n", qtd);
-    pause();
-    limpa();
 
     // Criar o vetor de nomes de arquivos
     char **vetorDeArquivos = fVetorDeArquivos(&aEntrada, qtd);
     if (vetorDeArquivos == NULL) {
-        fprintf(stderr, "Erro ao ler os nomes dos arquivos\n");
+        fprintf(stderr, "Erro ao ler os nomes dos arquivos.\n");
         fFechaArquivo(&aEntrada);
-        return;
+        return 1;
     }
 
     // Fechar o arquivo de entrada
@@ -128,22 +97,22 @@ void menu() {
     // Criar o vetor de caminhos completos
     char **arquivos = fCaminhoArquivos(vetorDeArquivos, qtd);
     if (arquivos == NULL) {
-        fprintf(stderr, "Erro ao criar o vetor de caminhos completos\n");
+        fprintf(stderr, "Erro ao criar o vetor de caminhos completos.\n");
         for (int i = 0; i < qtd; i++) {
             free(vetorDeArquivos[i]);
         }
         free(vetorDeArquivos);
-        return;
+        return 1;
     }
 
     // Criar a lista de palavras
     tNodeP *listaDePalavras = fListaDePalavras(arquivos, qtd);
     if (listaDePalavras == NULL) {
-        fprintf(stderr, "Erro ao criar a lista de palavras\n");
-        liberarRecursos(vetorDeArquivos, arquivos, NULL, NULL, qtd, 0, NULL);
-        return;
+        fprintf(stderr, "Erro ao criar a lista de palavras.\n");
+        liberarRecursos(vetorDeArquivos, arquivos, NULL, NULL, qtd, 0, NULL, NULL);
+        return 1;
     }
-
+    fOrdenaLista(listaDePalavras);
     int tam = fTamLista(listaDePalavras);
 
     // Criar o vetor de palavras
@@ -153,15 +122,22 @@ void menu() {
     // Criar a tabela hash
     HashTable *hashTable = fCriaTabelaHash(tam);
     if (hashTable == NULL) {
-        fprintf(stderr, "Erro ao criar a tabela hash\n");
-        liberarRecursos(vetorDeArquivos, arquivos, listaDePalavras, v, qtd, tam, NULL);
-        return;
+        fprintf(stderr, "Erro ao criar a tabela hash.\n");
+        liberarRecursos(vetorDeArquivos, arquivos, listaDePalavras, v, qtd, tam, NULL, NULL);
+        return 1;
     }
 
-    // Inserir as palavras na tabela hash
+    // Criar a árvore Patricia
+    tNodePT *patricia = NULL;
+
+    // Inserir as palavras na tabela hash e na árvore Patricia
     for (int i = 0; i < tam; i++) {
         fInsereHash(hashTable, v[i]);
+        patricia = fPatriciaInsere(&patricia, v[i]);
     }
+
+    pausa();
+    limpa();
 
     int opcao;
     do {
@@ -170,80 +146,66 @@ void menu() {
         printf("1. Listar arquivos\n");
         printf("2. Listar Ingredientes\n");
         printf("3. Mostrar tabela hash\n");
-        printf("4. Mostrar Patricia\n");
+        printf("4. Mostrar árvore Patricia\n");
         printf("5. Buscar por palavra (Hash e Patricia)\n");
-        printf("-1. Sair\n");
-        printf("Digite a opcao: ");
+        printf("0. Sair\n");
+        printf("Digite a opção: ");
         scanf("%d", &opcao);
-        pause();
+        pausa();
         limpa();
 
         switch (opcao) {
         case 1:
+            printf("Quantidade de arquivos: %d\n", qtd);
             for (int i = 0; i < qtd; i++) {
-                printf("%s\n", vetorDeArquivos[i]);
+                printf("\t%s\n", vetorDeArquivos[i]);
             }
-            pause();
+            pausa();
             limpa();
             break;
 
         case 2:
             fPrintDados(v, tam);
-            pause();
+            pausa();
             limpa();
             break;
 
         case 3:
             fPrintHash(hashTable);
-            pause();
+            pausa();
             limpa();
             break;
 
         case 4:
-            printf("Não feito ainda\n");
-            pause();
+            fPrintPatricia(patricia);
+            pausa();
             limpa();
             break;
 
         case 5:
-            buscarPalavra(hashTable);
-            pause();
+            printf("Digite a palavra:");
+            buscarPalavra(hashTable, patricia, qtd);
+            pausa();
             limpa();
             break;
 
-        case -1:
+        case 0:
+            printf("Saindo...\n");
             break;
 
         default:
             printf("Opção inválida, tente novamente.\n");
+            pausa();
             break;
         }
-    } while (opcao != -1);
+    } while (opcao != 0);
+    printf("Número de comparações de inserção na tabela hash: %u\n", fGetCompIHash());
+    printf("Número de comparações de pesquisa na tabela hash: %u\n", fGetCompPHash());
+    printf("Número de comparações de inserção na árvore Patricia: %u\n", fGetCompIPatricia());
+    printf("Número de comparações de pesquisa na árvore Patricia: %u\n", fGetCompPPatricia());
 
     // Liberar a memória
-    liberarRecursos(vetorDeArquivos, arquivos, listaDePalavras, v, qtd, tam, hashTable);
-}
-
-int main() {
-
-
-    menu();
-
-
-    printf("Vamo que vai dar bom");
-    char test[] = "abacaxi"; // Palavra teste pra conversão em binário
-    int len = sizeof(test)-1; //Tamanho da palavra
-    char word[len*5]; // Vetor para resultado da conversão
-    printf("\nTam: %i", len);
-    fConvertToBin(test, word, sizeof(test)-1);
-    fPrintKey(word);
-
-    char test2[] = "abacaxis";
-    len = sizeof(test2)-1;
-    char word2[len*5];
-    printf("\nTam: %i", len);
-    fConvertToBin(test2, word2, len);
-    fPrintKey(word2);
+    liberarRecursos(vetorDeArquivos, arquivos, listaDePalavras, v, qtd, tam, hashTable, patricia);
 
     return 0;
 }

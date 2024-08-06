@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>  // Para isspace
+#include <ctype.h>
 
 // Função para abrir arquivos
 int fAbreArquivo(char *nomeArquivo, tArquivo *arquivo) {
     arquivo->arquivo = fopen(nomeArquivo, "r");
     if (arquivo->arquivo == NULL) {
-        perror("fopen");
+        perror("Erro ao abrir o arquivo");
         return 0;
     }
     return 1;
@@ -32,18 +32,18 @@ int fQtdDeArquivos(tArquivo *arquivo) {
     }
 
     if (sscanf(linha, "%d", &n) != 1) {
-        printf("Erro ao ler a quantidade de arquivos\n");
+        printf("Erro ao interpretar a quantidade de arquivos\n");
         return -1;
     }
 
     return n;
 }
 
-// Função que cria um vetor de arquivos
+// Função que cria um vetor de nomes de arquivos
 char **fVetorDeArquivos(tArquivo *arquivo, int n) {
     char **vetorDeArquivos = (char **)calloc(n, sizeof(char *));
     if (vetorDeArquivos == NULL) {
-        printf("Erro ao alocar memória para o vetor de arquivos\n");
+        perror("Erro ao alocar memória para o vetor de arquivos");
         return NULL;
     }
 
@@ -58,11 +58,11 @@ char **fVetorDeArquivos(tArquivo *arquivo, int n) {
             return NULL;
         }
 
-        linha[strcspn(linha, "\n")] = '\0';
+        linha[strcspn(linha, "\n")] = '\0'; // Remove o '\n' do final da string
 
         vetorDeArquivos[i] = strdup(linha);
         if (vetorDeArquivos[i] == NULL) {
-            printf("Erro ao alocar memória para o nome do arquivo %d\n", i + 1);
+            perror("Erro ao alocar memória para o nome do arquivo");
             for (int j = 0; j < i; j++) {
                 free(vetorDeArquivos[j]);
             }
@@ -96,7 +96,7 @@ void fQuebra(char *str) {
 char **fCaminhoArquivos(char **arquivos, int qtd) {
     char **caminho = (char **)calloc(qtd, sizeof(char *));
     if (caminho == NULL) {
-        perror("calloc");
+        perror("Erro ao alocar memória para os caminhos dos arquivos");
         for (int i = 0; i < qtd; i++) {
             free(arquivos[i]);
         }
@@ -108,7 +108,7 @@ char **fCaminhoArquivos(char **arquivos, int qtd) {
         fQuebra(arquivos[i]); // Remove espaços em branco
         caminho[i] = malloc(1024);
         if (caminho[i] == NULL) {
-            perror("malloc");
+            perror("Erro ao alocar memória para o caminho do arquivo");
             for (int j = 0; j < i; j++) {
                 free(caminho[j]);
             }
@@ -141,10 +141,9 @@ tNodeP *fListaDePalavras(char **vetorDeArquivos, int qtd) {
     return list;
 }
 
-
 // Função para transformar uma string para minúsculas
 void strToLower(char *str) {
-    for ( ; *str; ++str) *str = tolower((unsigned char) *str);
+    for (; *str; ++str) *str = tolower((unsigned char) *str);
 }
 
 // Função para contar aparições de ingredientes na linha seguinte
@@ -187,7 +186,7 @@ int fContaIngredientes(char *nomeArquivo, char *ingredientes) {
     strToLower(ingredienteLower);
     int count = 0;
     char *pos = bufferLower;
-        while ((pos = strstr(pos, ingredienteLower)) != NULL) {
+    while ((pos = strstr(pos, ingredienteLower)) != NULL) {
         count++;
         pos += strlen(ingredienteLower);
     }

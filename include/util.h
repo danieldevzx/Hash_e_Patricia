@@ -3,7 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
+// Função para limpar a tela do terminal
 void limpa();
+
+// Função para pausar a execução e aguardar a entrada do usuário
 void pausa();
 
-#endif // PALAVRAS_TAD_H
+#endif // UTIL_H

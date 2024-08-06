@@ -3,6 +3,10 @@
 #include <string.h>
 #include <stdio.h>
 
+static unsigned int compP = 0;
+static unsigned int compI = 0;
+
+
 // Função de hash (djb2)
 unsigned int fHash(char *str, unsigned int size) {
     unsigned long hash = 5381;
@@ -48,6 +52,7 @@ void fInsereHash(HashTable *hashTable, tPalavra palavra) {
     newNode->palavra = palavra;
     newNode->next = hashTable->table[index];
     hashTable->table[index] = newNode;
+    compI++;
 }
 
 // Procura uma palavra na tabela hash
@@ -55,6 +60,7 @@ tPalavra *fPesquisaHash(HashTable *hashTable, char *nome) {
     unsigned int index = fHash(nome, hashTable->size);
     tNodeH *current = hashTable->table[index];
     while (current) {
+        compP++;
         if (strcmp(current->palavra.nome, nome) == 0) {
             return &current->palavra;
         }
@@ -76,6 +82,7 @@ void fLiberaHash(HashTable *hashTable) {
     free(hashTable->table);
     free(hashTable);
 }
+
 // Função para imprimir a tabela hash
 void fPrintHash(HashTable *hashTable) {
     if (hashTable == NULL) {
@@ -86,20 +93,28 @@ void fPrintHash(HashTable *hashTable) {
     printf("Tabela Hash:\n");
     for (unsigned int i = 0; i < hashTable->size; i++) {
         printf("Índice %u: ", i);
-        tNodeH *node = hashTable->table[i];
-        if (node == NULL) {
+        tNodeH *nodeH = hashTable->table[i];
+        if (nodeH == NULL) {
             printf("Lista vazia\n");
         } else {
-            while (node != NULL) {
-                printf(" -> %s: [", node->palavra.nome);
-                while (node->palavra.node != NULL) {
-                    printf("<%d,%d>", node->palavra.node->data.qtd, node->palavra.node->data.arq);
-                    node->palavra.node = node->palavra.node->next;
+            while (nodeH != NULL) {
+                printf(" -> %s: [", nodeH->palavra.nome);
+                tNodeID *nodeP = nodeH->palavra.node;
+                while (nodeP != NULL) {
+                    printf("<%d,%d>", nodeP->data.qtd , nodeP->data.arq);
+                    nodeP = nodeP->next; 
                 }
-                node = node->next;
                 printf("]");
+                nodeH = nodeH->next;
             }
             printf("\n");
         }
     }
+}
+unsigned int fGetCompIHash() {
+    return compI;
+}
+
+unsigned int fGetCompPHash() {
+    return compP;
 }

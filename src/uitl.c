@@ -2,9 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#ifndef UTIL_H
-#define UTIL_H
-
 // Função para limpar a tela
 void limpa() {
     #ifdef _WIN32
@@ -12,7 +9,7 @@ void limpa() {
         if (system("cls")) {
             fprintf(stderr, "Erro ao executar o comando 'cls'\n");
         }
-    #elif defined(__unix__) || defined(__unix) || defined(__APPLE__) && defined(__MACH__)
+    #elif defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
         // Sistemas Unix-like (incluindo macOS)
         if (system("clear")) {
             fprintf(stderr, "Erro ao executar o comando 'clear'\n");
@@ -24,7 +21,7 @@ void limpa() {
 }
 
 // Função para pausar a execução e aguardar a entrada do usuário
-void pause() {
+void pausa() {
     #ifdef _WIN32
         // Sistema Windows
         if (system("pause")) {
