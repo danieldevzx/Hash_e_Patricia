@@ -1,4 +1,5 @@
-#Trabalho
+# Trabalho
+
 O trabalho visa realizar um estudo comparativo entre duas estruturas de
 dados amplamente utilizadas para a implementação de índices invertidos: a árvore
 Patricia e a tabela hash. O objetivo é construir índices invertidos para uma máquina
